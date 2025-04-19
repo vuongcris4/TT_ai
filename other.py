@@ -44,21 +44,12 @@ criterion = nn.CrossEntropyLoss()
 optimizer = Adam(model.parameters(), lr=0.001)
 num_epochs = 5
 
-learner = Learner(model, criterion, optimizer, device, num_epochs)
-learner.fit(train_dataloader, val_dataloader, 3) # train và lưu best model
-
-# epoch_loss_val, mAcc_val, mIoU_val = evaluate(learner.model, val_dataloader, criterion, device, num_classes)
-# print(f"Validation Loss: {epoch_loss_val:.4f}, Mean Accuracy: {mAcc_val:.4f}, Mean IoU: {mIoU_val:.4f}")
-
-# Load best model
-checkpoint = torch.load("checkpoints/22139078_22139044_best_model.pt", weights_only=False)
-print("===================")
-print(f"Best Model at epoch : {checkpoint["epoch"]}")
-
-model2 = myModel(num_classes).to(device)
-model2.load_state_dict(checkpoint["model"])
-epoch_loss_val, mAcc_val, mIoU_val = evaluate(model2, train_dataloader, criterion, device, num_classes)
+# GIẢ SỬ MẤT ĐIỆN, TRAIN LẠI
+model3 = myModel(num_classes).to(device)
+checkpoint = torch.load("checkpoints/22139078_22139044_last_model.pt", weights_only=False)
+optimizer = Adam(model.parameters(), lr=0.001)
+optimizer.load_state_dict(checkpoint["optimizer"])
+learner = Learner(model3, criterion, optimizer, device, num_epochs)
+learner.fit(train_dataloader, val_dataloader, 3, start_epoch=checkpoint["epoch"]) # train và lưu best model
+epoch_loss_val, mAcc_val, mIoU_val = evaluate(model3, val_dataloader, criterion, device, num_classes)
 print(f"Validation Loss: {epoch_loss_val:.4f}, Mean Accuracy: {mAcc_val:.4f}, Mean IoU: {mIoU_val:.4f}")
-
-
-

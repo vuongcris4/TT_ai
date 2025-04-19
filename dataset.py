@@ -43,4 +43,3 @@ class SemanticSegmentationDataset(Dataset):
 
         return image, label_mask
 
-
