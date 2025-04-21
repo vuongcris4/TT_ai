@@ -1,5 +1,5 @@
 from torch.utils.data import DataLoader
-from dataset import SemanticSegmentationDataset, TransformedSubset
+from dataset import SemanticSegmentationDataset, MyDataset
 from torchvision import transforms
 import torch
 from torch.optim import Adam
@@ -27,8 +27,8 @@ dataset = SemanticSegmentationDataset(
 
 train_dataset, val_dataset = train_val_split(dataset)
 
-train_dataset = TransformedSubset(train_dataset, train_transform)
-val_dataset = TransformedSubset(val_dataset, val_transform)
+train_dataset = MyDataset(train_dataset, train_transform)
+val_dataset = MyDataset(val_dataset, val_transform)
 
 train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)

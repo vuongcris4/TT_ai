@@ -1,47 +1,7 @@
-from torch.utils.data import DataLoader
-from dataset import SemanticSegmentationDataset, MyDataset
-from torchvision import transforms
-import torch
-from torch.optim import Adam
-from learner import evaluate
-from model import myModel
-import torch.nn as nn
-from utils import count_parameters
-import random
 import matplotlib.pyplot as plt
+import random
+import torch
 import numpy as np
-import pickle
-
-dataset = SemanticSegmentationDataset(
-    image_dir='kaggle/input',
-    label_dir='kaggle/label',
-)
-
-with open('mean_std.pkl', 'rb') as f:
-    data = pickle.load(f)
-    mean = data['mean']
-    std = data['std']
-
-val_transform = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=mean, std=std)
-])
-
-val_dataset = MyDataset(dataset, transform=val_transform)
-
-val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
-
-num_classes = len(dataset.class_colors)
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = myModel(num_classes).to(device)
-
-count_parameters(model) # Đếm số parameters của model
-
-criterion = nn.CrossEntropyLoss()
-optimizer = Adam(model.parameters(), lr=0.001)
-num_epochs = 5
 
 # Hàm chuyển mask (nhãn) thành ảnh RGB
 def mask_to_rgb(mask, class_colors):
@@ -100,19 +60,5 @@ def visualize_predictions(images, labels, preds, class_colors, num_samples=3):
 
 # Kiểm tra và hiển thị dự đoán
 model = torch.jit.load("checkpoints/22139078_22139044_best_model.pt")
-
-# Đánh giá mô hình
-model.eval()
-with torch.no_grad():
-    images, labels = get_random_samples(val_dataloader, 50)
-    images = images.to(device)
-    labels = labels.to(device)
-
-    # Dự đoán kết quả
-    preds = model(images).argmax(dim=1)  # Lấy class có giá trị lớn nhất
-
-    # Hiển thị kết quả
-    visualize_predictions(images, labels, preds, dataset.class_colors, num_samples=50)
-
-epoch_loss_val, mAcc_val, mIoU_val = evaluate(model, val_dataloader, criterion, device, num_classes)
-print(f"Validation Loss: {epoch_loss_val:.4f}, Mean Accuracy: {mAcc_val:.4f}, Mean IoU: {mIoU_val:.4f}")
+# epoch_loss_val, mAcc_val, mIoU_val = evaluate(model, val_dataloader, criterion, device, classes)
+# print(f"Validation Loss: {epoch_loss_val:.4f}, Mean Accuracy: {mAcc_val:.4f}, Mean IoU: {mIoU_val:.4f}")

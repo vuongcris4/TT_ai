@@ -37,9 +37,23 @@ class SemanticSegmentationDataset(Dataset):
         for rgb, idx in self.class_colors.items():
             label_mask[np.all(label == rgb, axis=-1)] = idx
 
-        if self.transform:
-            image = self.transform(image)
-            label_mask = torch.from_numpy(label_mask).long()
+        # if self.transform:
+        #     image = self.transform(image)
+        label_mask = torch.from_numpy(label_mask).long()
 
         return image, label_mask
 
+
+class MyDataset(Dataset):
+    def __init__(self, subset, transform=None):
+        self.subset = subset
+        self.transform = transform
+
+    def __getitem__(self, index):
+        x, y = self.subset[index]
+        if self.transform:
+            x = self.transform(x)
+        return x, y
+
+    def __len__(self):
+        return len(self.subset)

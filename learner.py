@@ -72,7 +72,11 @@ class Learner:
             # save best model
             if mAcc_val >= best_val_mAcc:
                 best_val_mAcc = mAcc_val
-                torch.save(checkpoint, f"{self.checkpoint_dir}/22139078_22139044_best_model.pt")
+                # torch.save(checkpoint, f"{self.checkpoint_dir}/22139078_22139044_best_model.pt")
+
+                model_save = torch.jit.script(self.model)
+                model_save.save(f"{self.checkpoint_dir}/22139078_22139044_best_model.pt")
+
 
 
 def evaluate(model, dataloader, criterion, device, num_classes):
