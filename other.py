@@ -10,8 +10,8 @@ from utils import count_parameters, train_val_split
 
 train_transform = transforms.Compose([
     transforms.ToPILImage(),
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomRotation(10),
+    # transforms.RandomHorizontalFlip(),
+    # transforms.RandomRotation(10),
     transforms.ToTensor()
 ])
 

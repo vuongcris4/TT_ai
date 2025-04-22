@@ -73,3 +73,5 @@ class myModel(nn.Module):
 model = myModel(n_classes=3)
 from utils import count_parameters
 count_parameters(model)
+
+
